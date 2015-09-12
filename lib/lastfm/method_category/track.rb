@@ -81,6 +81,7 @@ class Lastfm
 
       regular_method(
         :search,
+        :return_body => true,
         :required => [:track],
         :optional => [
           [:artist, nil],
@@ -88,8 +89,21 @@ class Lastfm
           [:page, nil]
         ]
       ) do |response|
-        response.xml['results']['trackmatches']['track'] = Util.force_array(response.xml['results']['trackmatches']['track'])
-        response.xml
+        doc = Nokogiri::XML(response)
+        tracks = doc.xpath("//trackmatches/track")
+        tracks.map { |t|
+          {
+            :name => t.xpath("name").text,
+            :artist => t.xpath("artist").text,
+            :url => t.xpath("url").text,
+            :streamable => t.xpath("streamable").text,
+            :listeners => t.xpath("listeners").text,
+            :images => t.xpath("image").map { |image|
+              { :size => image["size"], :url =>  image.text }
+            }
+          }
+
+        }
       end
 
       method_with_authentication(

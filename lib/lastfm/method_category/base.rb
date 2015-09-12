@@ -42,15 +42,18 @@ class Lastfm
           end
 
           define_method(id) do |*args|
-            block.call(
-              send(
-                method,
-                id.to_s.camelize(:lower),
+            options =
                 Lastfm::Util.build_options(
                   args,
                   params[:required],
                   params[:optional]
                 )
+            options.merge!(:return_body => true) if params[:return_body]
+            block.call(
+              send(
+                method,
+                id.to_s.camelize(:lower),
+                options
               )
             )
           end

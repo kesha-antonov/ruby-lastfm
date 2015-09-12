@@ -2,6 +2,7 @@ require 'rubygems'
 require 'digest/md5'
 require 'httparty'
 require 'active_support/core_ext/string/inflections'
+require 'nokogiri'
 
 require 'lastfm/util'
 require 'lastfm/response'
@@ -114,6 +115,10 @@ class Lastfm
       HTTPSRequest.send(*request_args)
     else
       HTTPRequest.send(*request_args)
+    end
+
+    if params[:return_body]
+      return response.body
     end
 
     response = Response.new(response.body)
