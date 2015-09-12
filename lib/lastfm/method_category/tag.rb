@@ -31,10 +31,11 @@ class Lastfm
           [:page, nil]
         ]
       ) do |response|
-        response.xml['topalbums']['album']
+        # TODO: PATCHED
+        response.xml['albums']['album']
 
       end
-      
+
       regular_method(
         :search,
         :required => [:tag],
