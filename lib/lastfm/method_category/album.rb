@@ -58,6 +58,7 @@ class Lastfm
 
       regular_method(
         :search,
+        return_body: true,
         required: [:album],
         optional: [
           [:limit, nil],
