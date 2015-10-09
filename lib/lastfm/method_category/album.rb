@@ -58,14 +58,26 @@ class Lastfm
 
       regular_method(
         :search,
-        :required => [:album],
-        :optional => [
+        required: [:album],
+        optional: [
           [:limit, nil],
           [:page, nil]
         ]
       ) do |response|
-        response.xml['results']['albummatches']['album'] = Util.force_array(response.xml['results']['albummatches']['album'])
-        response.xml
+        doc = Nokogiri::XML(response)
+        albums = doc.xpath("//albummatches/album")
+        albums.map do |a|
+          {
+            name: a.xpath('name').text,
+            artist: a.xpath('artist').text,
+            id: a.xpath('id').text,
+            url: a.xpath('url').text,
+            streamable: a.xpath('streamable').text,
+            images: a.xpath('image').map { |image|
+              { size: image['size'], url:  image.text }
+            }
+          }
+        end
       end
 
       method_with_authentication(

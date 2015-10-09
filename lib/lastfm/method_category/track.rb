@@ -102,7 +102,6 @@ class Lastfm
               { :size => image["size"], :url =>  image.text }
             }
           }
-
         }
       end
 
